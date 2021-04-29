@@ -2,13 +2,14 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const helpers = require("./helpers");
+const axios = require("axios");
 
 const app = express();
 const port = 5000;
 
-// var dir = path.join(__dirname, "uploads");
+var dir = path.join(__dirname, "uploads");
 
-// app.use(express.static(dir));
+app.use(express.static(dir));
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -50,9 +51,21 @@ app.post("/upload", (req, res) => {
       return res.send(err);
     }
 
-    // Display uploaded image for user validation
-    res.send(
-      `You have uploaded this image: <hr/><img src="${req.file.path}" width="500"><hr /><a href="./">Upload another image</a>`
-    );
+    let ip = "http://178.128.196.62:5000";
+    let path = req.file.path.split("\\")[1];
+
+    let link = ip + "/" + path;
+    console.log(link);
+
+    let data = {
+      url: link,
+    };
+
+    const postColab = async () => {
+      const response = await axios.post("http://a9c85280569b.ngrok.io/", data);
+      res.json({ response: response.data.trim() });
+    };
+
+    postColab();
   });
 });
