@@ -32,21 +32,6 @@ app.get("/", (req, res) => {
   res.json({ user: "samett" });
 });
 
-const postColab = async (data) => {
-  try {
-    const response = await axios.post("http://5dec119d3f86.ngrok.io/", data);
-    let datas = {
-      predict: response.data.split("-")[0],
-      base: response.data.split("-")[1],
-    };
-    return datas;
-  } catch {
-    console.log("error11111");
-  }
-
-  //res.json({ response: response.data.trim() });
-};
-
 app.post("/upload", (req, res) => {
   let upload = multer({
     storage: storage,
@@ -68,13 +53,31 @@ app.post("/upload", (req, res) => {
     }
 
     let ip = "http://178.128.196.62:5000";
-    let path = req.file.path.split("\\")[1];
+    let path = req.file.path.split("/")[1];
 
     let link = ip + "/" + path;
     console.log(link);
 
     let data = {
       url: link,
+    };
+
+    const postColab = async (data) => {
+      try {
+        const response = await axios.post(
+          "http://5dec119d3f86.ngrok.io/",
+          data
+        );
+        let datas = {
+          predict: response.data.split("-")[0],
+          base: response.data.split("-")[1],
+        };
+        console.log(datas);
+        res.json({ response: datas });
+      } catch {
+        console.log("error11111");
+      }
+      //
     };
 
     //fonksiyonun calismasi için responsedan gelen stringin aşagıya gönderilmesi lazım
