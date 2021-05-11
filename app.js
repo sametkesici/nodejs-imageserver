@@ -32,6 +32,21 @@ app.get("/", (req, res) => {
   res.json({ user: "samett" });
 });
 
+const postColab = async (data) => {
+  try {
+    const response = await axios.post("http://5dec119d3f86.ngrok.io/", data);
+    let datas = {
+      predict: response.data.split("-")[0],
+      base: response.data.split("-")[1],
+    };
+    return datas;
+  } catch {
+    console.log("error11111");
+  }
+
+  //res.json({ response: response.data.trim() });
+};
+
 app.post("/upload", (req, res) => {
   let upload = multer({
     storage: storage,
@@ -62,20 +77,13 @@ app.post("/upload", (req, res) => {
       url: link,
     };
 
-    const postColab = async () => {
-      const response = await axios.post("http://a9c85280569b.ngrok.io/", data);
-      res.json({ response: response.data.trim() });
-    };
-
     //fonksiyonun calismasi için responsedan gelen stringin aşagıya gönderilmesi lazım
     //base64 u image e donustur ve kaydet
-    var base64Data = req.rawBody.replace(/^data:image\/png;base64,/, "");
+    //var base64Data = req.rawBody.replace(/^data:image\/png;base64,/, "");
+    // require("fs").writeFile("parsedImage"+ randomInt(1, 200)+".png", base64Data, 'base64', function(err) {
+    //   console.log(err);
+    // });
 
-    require("fs").writeFile("parsedImage"+ randomInt(1, 200)+".png", base64Data, 'base64', function(err) {
-      console.log(err);
-    });
-
-
-    postColab();
+    postColab(data);
   });
 });
