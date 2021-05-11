@@ -3,6 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const helpers = require("./helpers");
 const axios = require("axios");
+const { randomInt } = require("crypto");
 
 const app = express();
 const port = 5000;
@@ -65,6 +66,15 @@ app.post("/upload", (req, res) => {
       const response = await axios.post("http://a9c85280569b.ngrok.io/", data);
       res.json({ response: response.data.trim() });
     };
+
+    //fonksiyonun calismasi için responsedan gelen stringin aşagıya gönderilmesi lazım
+    //base64 u image e donustur ve kaydet
+    var base64Data = req.rawBody.replace(/^data:image\/png;base64,/, "");
+
+    require("fs").writeFile("parsedImage"+ randomInt(1, 200)+".png", base64Data, 'base64', function(err) {
+      console.log(err);
+    });
+
 
     postColab();
   });
